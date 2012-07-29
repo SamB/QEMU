@@ -106,7 +106,7 @@ void static inline print_description_msg_header(mach_msg_header_t *hdr)
 {
     char *name = NULL;
     int i;
-    struct { int number; char *name; } msg_name[] =
+    struct { int number; const char *name; } msg_name[] =
     {
         /* see http://fxr.watson.org/fxr/source/compat/mach/mach_namemap.c?v=NETBSD */
         { 200,      "host_info" },
@@ -166,7 +166,7 @@ static inline void print_mach_msg_return(mach_msg_return_t ret)
 {
     int i, found = 0;
 #define MACH_MSG_RET(msg) { msg, #msg }
-    struct { int code; char *name; } msg_name[] =
+    struct { int code; const char *name; } msg_name[] =
     {
         /* ref: http://darwinsource.opendarwin.org/10.4.2/xnu-792.2.4/osfmk/man/mach_msg.html */
         /* send message */
@@ -931,7 +931,7 @@ typedef long (*syscall_function_t)(void *cpu_env, int num);
 #define CALL_NOERRNO  (CALL_DIRECT | 4 /* = 5 */)
 
 struct unix_syscall {
-    char * name;
+    const char * name;
     int number;
     syscall_function_t function;
     int nargs;
