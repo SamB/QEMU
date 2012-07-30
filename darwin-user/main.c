@@ -29,6 +29,7 @@
 
 #include "qemu.h"
 #include "qemu-common.h"
+#include "qemu-timer.h"
 
 #define DEBUG_LOGFILE "/tmp/qemu.log"
 
@@ -41,6 +42,11 @@
 #include <mach/vm_map.h>
 
 int singlestep;
+#if defined(CONFIG_USE_GUEST_BASE)
+unsigned long mmap_min_addr;
+unsigned long guest_base;
+int have_guest_base;
+#endif
 
 const char *interp_prefix = "";
 
@@ -651,7 +657,7 @@ void cpu_loop(CPUX86State *env)
             gdb_handlesig (env, SIGFPE);
             queue_signal(info.si_signo, &info);
             break;
-        case EXCP01_SSTP:
+        case EXCP01_DB:
         case EXCP03_INT3:
             info.si_signo = SIGTRAP;
             info.si_errno = 0;
@@ -811,6 +817,11 @@ int main(int argc, char **argv)
         }
     }
 
+    cpu_model = NULL;
+#if defined(cpudef_setup)
+    cpudef_setup(); /* parse cpu definitions in target config file (TBD) */
+#endif
+
     /* init debug */
     cpu_set_log_filename(log_file);
     if (log_mask) {
@@ -858,7 +869,11 @@ int main(int argc, char **argv)
     /* NOTE: we need to init the CPU at this stage to get
        qemu_host_page_size */
     env = cpu_init(cpu_model);
-    cpu_state_reset(env);
+    if (!env) {
+        fprintf(stderr, "Unable to find CPU definition\n");
+        exit(1);
+    }
+    cpu_reset(ENV_GET_CPU(env));
 
     printf("Starting %s with qemu\n----------------\n", filename);
 
