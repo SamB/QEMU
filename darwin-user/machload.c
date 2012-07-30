@@ -63,7 +63,8 @@ extern const char *interp_prefix;
 # endif
 #endif
 
-/* XXX: in an include */
+/* XXX: should be in a header! */
+/* Subtly different from "struct nlist". */
 struct nlist_extended
 {
     union {
@@ -74,7 +75,7 @@ struct nlist_extended
     unsigned char n_sect;
     short st_desc;
     unsigned long st_value;
-    unsigned long st_size;
+    unsigned long st_size; /* NEW FIELD */
 };
 
 /* Print symbols in gdb */
