@@ -143,14 +143,12 @@ int do_sigaction(int sig, const struct sigaction *act,
 int do_sigaltstack(const struct target_sigaltstack *ss, struct target_sigaltstack *oss);
 
 void gemu_log(const char *fmt, ...) GCC_FMT_ATTR(1, 2);
-void qerror(const char *fmt, ...) GCC_FMT_ATTR(1, 2);
+void QEMU_NORETURN qerror(const char *fmt, ...) GCC_FMT_ATTR(1, 2);
 
 void write_dt(void *ptr, unsigned long addr, unsigned long limit, int flags);
 
 extern CPUArchState *global_env;
 void cpu_loop(CPUArchState *env);
-void init_paths(const char *prefix);
-const char *path(const char *pathname);
 
 #include "qemu-log.h"
 

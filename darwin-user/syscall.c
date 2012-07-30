@@ -513,7 +513,7 @@ long do_mach_syscall(void *cpu_env, int num, uint32_t arg1, uint32_t arg2, uint3
         break;
     case -91:
         DPRINTF("mk_timer_create()\n");
-        extern int mk_timer_create(); // XXX: is there any header for that?
+        extern int mk_timer_create(void); // XXX: is there any header for that?
         ret = mk_timer_create();
         break;
     case -92:
