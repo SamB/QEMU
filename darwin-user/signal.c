@@ -51,8 +51,8 @@ struct emulated_sigaction {
                              first signal, we put it here */
 };
 
-static struct sigaltstack target_sigaltstack_used = {
-    0, 0, SA_DISABLE
+static struct target_sigaltstack target_sigaltstack_used = {
+    NULL, 0, SS_DISABLE
 };
 
 static struct emulated_sigaction sigact_table[NSIG];
@@ -214,7 +214,7 @@ static void host_signal_handler(int host_signum, siginfo_t *info,
     }
 }
 
-int do_sigaltstack(const struct sigaltstack *ss, struct sigaltstack *oss)
+int do_sigaltstack(const struct target_sigaltstack *ss, struct target_sigaltstack *oss)
 {
     /* XXX: test errors */
     if(oss)
@@ -300,7 +300,7 @@ static inline void *
 get_sigframe(struct emulated_sigaction *ka, CPUX86State *env, size_t frame_size)
 {
     /* XXX Fix that */
-    if(target_sigaltstack_used.ss_flags & SA_DISABLE)
+    if(target_sigaltstack_used.ss_flags & SS_DISABLE)
     {
         int esp;
         /* Default to using normal stack */
@@ -343,9 +343,9 @@ long do_sigreturn(CPUX86State *env, int num)
     /* XXX Get current signal number */
     /* XXX Adjust accordin to sc_onstack, sc_mask */
     if(tswapl(scp->sc_onstack) & 0x1)
-        target_sigaltstack_used.ss_flags |= ~SA_DISABLE;
+        target_sigaltstack_used.ss_flags |= ~SS_DISABLE;
     else
-        target_sigaltstack_used.ss_flags &=  SA_DISABLE;
+        target_sigaltstack_used.ss_flags &=  SS_DISABLE;
     int set = tswapl(scp->sc_eax);
     sigprocmask(SIG_SETMASK, &set, NULL);
 

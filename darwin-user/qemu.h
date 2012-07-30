@@ -12,6 +12,12 @@
 
 typedef siginfo_t target_siginfo_t;
 #define target_sigaction	sigaction
+struct target_sigaltstack
+{
+	void	*ss_sp;			/* signal stack base */
+	size_t	ss_size;		/* signal stack length */
+	int	ss_flags;		/* SS_DISABLE and/or SS_ONSTACK */
+};
 #ifdef TARGET_I386
 struct target_pt_regs {
 	long ebx;
@@ -97,7 +103,7 @@ long do_thread_syscall(void *cpu_env, int num, uint32_t arg1, uint32_t arg2, uin
 long do_unix_syscall(void *cpu_env, int num);
 int do_sigaction(int sig, const struct sigaction *act,
                  struct sigaction *oact);
-int do_sigaltstack(const struct sigaltstack *ss, struct sigaltstack *oss);
+int do_sigaltstack(const struct target_sigaltstack *ss, struct target_sigaltstack *oss);
 
 void gemu_log(const char *fmt, ...) GCC_FMT_ATTR(1, 2);
 void qerror(const char *fmt, ...) GCC_FMT_ATTR(1, 2);
