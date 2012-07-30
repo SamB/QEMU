@@ -7,6 +7,7 @@
 #include "cpu.h"
 
 #include "thunk.h"
+#include "syscall_defs.h"
 
 #include "gdbstub.h"
 
