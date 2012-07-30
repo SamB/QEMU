@@ -146,9 +146,17 @@ int target_msync(unsigned long start, unsigned long len, int flags);
 
 /* user access */
 
+#define VERIFY_READ 0
+#define VERIFY_WRITE 1 /* implies read access */
+
 /* XXX: todo protect every memory access */
-#define lock_user(x,y,z)    (void*)(x)
-#define unlock_user(x,y,z)
+static inline void *lock_user(int type, abi_ulong guest_addr, long len, int copy)
+{
+    return g2h(guest_addr);
+}
+static inline void unlock_user(void *host_ptr, abi_ulong guest_addr, long len)
+{
+}
 
 /* Mac OS X ABI arguments processing */
 #ifdef TARGET_I386

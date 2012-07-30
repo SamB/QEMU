@@ -701,25 +701,25 @@ static long do_ioctl(long fd, long cmd, long arg)
         case IOC_R:
             ret = get_errno(ioctl(fd, ie->host_cmd, buf_temp));
             if (!is_error(ret)) {
-                argptr = lock_user(arg, target_size, 0);
+                argptr = lock_user(VERIFY_WRITE, arg, target_size, 0);
                 thunk_convert(argptr, buf_temp, arg_type, THUNK_TARGET);
                 unlock_user(argptr, arg, target_size);
             }
             break;
         case IOC_W:
-            argptr = lock_user(arg, target_size, 1);
+            argptr = lock_user(VERIFY_READ, arg, target_size, 1);
             thunk_convert(buf_temp, argptr, arg_type, THUNK_HOST);
             unlock_user(argptr, arg, 0);
             ret = get_errno(ioctl(fd, ie->host_cmd, buf_temp));
             break;
         default:
         case IOC_RW:
-            argptr = lock_user(arg, target_size, 1);
+            argptr = lock_user(VERIFY_READ | VERIFY_WRITE, arg, target_size, 1);
             thunk_convert(buf_temp, argptr, arg_type, THUNK_HOST);
             unlock_user(argptr, arg, 0);
             ret = get_errno(ioctl(fd, ie->host_cmd, buf_temp));
             if (!is_error(ret)) {
-                argptr = lock_user(arg, target_size, 0);
+                argptr = lock_user(VERIFY_WRITE, arg, target_size, 0);
                 thunk_convert(argptr, buf_temp, arg_type, THUNK_TARGET);
                 unlock_user(argptr, arg, target_size);
             }
