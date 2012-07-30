@@ -85,6 +85,7 @@ int   macho_offset = 0;
 int load_object(const char *filename, struct target_pt_regs * regs, void ** mh);
 
 #ifdef TARGET_I386
+/* struct i386_thread_state from <mach/i386/_structs.h>. */
 typedef struct mach_i386_thread_state {
     unsigned int    eax;
     unsigned int    ebx;
@@ -104,6 +105,7 @@ typedef struct mach_i386_thread_state {
     unsigned int    gs;
 } mach_i386_thread_state_t;
 
+/* XXX: use swap_i386_thread_state() from <mach-o/i386/swap.h> ? */
 static void bswap_i386_thread_state(struct mach_i386_thread_state *ts)
 {
     bswap32s((uint32_t*)&ts->eax);
@@ -129,6 +131,7 @@ static void bswap_i386_thread_state(struct mach_i386_thread_state *ts)
 #endif
 
 #ifdef TARGET_PPC
+/* struct ppc_thread_state from <mach/ppc/_structs.h> */
 struct mach_ppc_thread_state {
     unsigned int srr0;      /* Instruction address register (PC) */
     unsigned int srr1;    /* Machine state register (supervisor) */
@@ -174,6 +177,7 @@ struct mach_ppc_thread_state {
     unsigned int vrsave;    /* Vector Save Register */
 };
 
+/* XXX: use swap_ppc_thread_state() from <mach-o/ppc/swap.h> ? */
 void bswap_ppc_thread_state(struct mach_ppc_thread_state *ts)
 {
     bswap32s((uint32_t*)&ts->srr0);
