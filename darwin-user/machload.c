@@ -498,7 +498,7 @@ int load_object(const char *filename, struct target_pt_regs * regs, void ** mh)
         need_bswap = 1;
     }
     else
-        qerror("Not a Mach-O file.", filename);
+        qerror("Not a Mach-O file: %s.", filename);
 
     DPRINTF("loading %s %s...\n", filename, is_fat ? "[FAT]": "[REGULAR]");
     if(is_fat)
