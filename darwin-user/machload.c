@@ -104,7 +104,7 @@ typedef struct mach_i386_thread_state {
     unsigned int    gs;
 } mach_i386_thread_state_t;
 
-void bswap_i386_thread_state(struct mach_i386_thread_state *ts)
+static void bswap_i386_thread_state(struct mach_i386_thread_state *ts)
 {
     bswap32s((uint32_t*)&ts->eax);
     bswap32s((uint32_t*)&ts->ebx);
@@ -233,7 +233,7 @@ struct target_thread_command {
     struct target_thread_state state;  /* thread state for this flavor */
 };
 
-void bswap_tc(struct target_thread_command *tc)
+static void bswap_tc(struct target_thread_command *tc)
 {
     bswap32s((uint32_t*)(&tc->flavor));
     bswap32s((uint32_t*)&tc->count);
@@ -246,7 +246,7 @@ void bswap_tc(struct target_thread_command *tc)
 #endif
 }
 
-void bswap_mh(struct mach_header *mh)
+static void bswap_mh(struct mach_header *mh)
 {
     bswap32s((uint32_t*)(&mh->magic));
     bswap32s((uint32_t*)&mh->cputype);
@@ -257,20 +257,20 @@ void bswap_mh(struct mach_header *mh)
     bswap32s((uint32_t*)&mh->flags);
 }
 
-void bswap_lc(struct load_command *lc)
+static void bswap_lc(struct load_command *lc)
 {
     bswap32s((uint32_t*)&lc->cmd);
     bswap32s((uint32_t*)&lc->cmdsize);
 }
 
 
-void bswap_fh(struct fat_header *fh)
+static void bswap_fh(struct fat_header *fh)
 {
     bswap32s((uint32_t*)&fh->magic);
     bswap32s((uint32_t*)&fh->nfat_arch);
 }
 
-void bswap_fa(struct fat_arch *fa)
+static void bswap_fa(struct fat_arch *fa)
 {
     bswap32s((uint32_t*)&fa->cputype);
     bswap32s((uint32_t*)&fa->cpusubtype);
@@ -279,7 +279,7 @@ void bswap_fa(struct fat_arch *fa)
     bswap32s((uint32_t*)&fa->align);
 }
 
-void bswap_segcmd(struct segment_command *sc)
+static void bswap_segcmd(struct segment_command *sc)
 {
     bswap32s((uint32_t*)&sc->vmaddr);
     bswap32s((uint32_t*)&sc->vmsize);
@@ -291,7 +291,7 @@ void bswap_segcmd(struct segment_command *sc)
     bswap32s((uint32_t*)&sc->flags);
 }
 
-void bswap_symtabcmd(struct symtab_command *stc)
+static void bswap_symtabcmd(struct symtab_command *stc)
 {
     bswap32s((uint32_t*)&stc->cmd);
     bswap32s((uint32_t*)&stc->cmdsize);
@@ -301,14 +301,14 @@ void bswap_symtabcmd(struct symtab_command *stc)
     bswap32s((uint32_t*)&stc->strsize);
 }
 
-void bswap_sym(struct nlist *n)
+static void bswap_sym(struct nlist *n)
 {
     bswap32s((uint32_t*)&n->n_un.n_strx);
     bswap16s((uint16_t*)&n->n_desc);
     bswap32s((uint32_t*)&n->n_value);
 }
 
-int load_thread(struct mach_header *mh, struct target_thread_command *tc, struct target_pt_regs * regs, int fd, int mh_pos, int need_bswap)
+static int load_thread(struct mach_header *mh, struct target_thread_command *tc, struct target_pt_regs * regs, int fd, int mh_pos, int need_bswap)
 {
     int entry;
     if(need_bswap)
@@ -351,7 +351,7 @@ int load_thread(struct mach_header *mh, struct target_thread_command *tc, struct
     return entry;
 }
 
-int load_dylinker(struct mach_header *mh, struct dylinker_command *dc, int fd, int mh_pos, int need_bswap)
+static int load_dylinker(struct mach_header *mh, struct dylinker_command *dc, int fd, int mh_pos, int need_bswap)
 {
     int size;
     char * dylinker_name;
@@ -373,7 +373,7 @@ int load_dylinker(struct mach_header *mh, struct dylinker_command *dc, int fd, i
     return load_object(dylinker_name, NULL, NULL);
 }
 
-int load_segment(struct mach_header *mh, struct segment_command *sc, int fd, int mh_pos, int need_bswap, int fixed, int slide)
+static int load_segment(struct mach_header *mh, struct segment_command *sc, int fd, int mh_pos, int need_bswap, int fixed, int slide)
 {
     unsigned long addr = sc->vmaddr;
     unsigned long size = sc->filesize;
@@ -432,7 +432,7 @@ int load_segment(struct mach_header *mh, struct segment_command *sc, int fd, int
     return error;
 }
 
-void *load_data(int fd, long offset, unsigned int size)
+static void *load_data(int fd, long offset, unsigned int size)
 {
     char *data;
 
@@ -721,7 +721,7 @@ int load_object(const char *filename, struct target_pt_regs * regs, void ** mh)
 
 extern unsigned long stack_size;
 
-unsigned long setup_arg_pages(void * mh, char ** argv, char ** env)
+static unsigned long setup_arg_pages(void * mh, char ** argv, char ** env)
 {
     unsigned long stack_base, error, size;
     int i;
