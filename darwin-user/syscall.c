@@ -102,7 +102,7 @@ static inline int is_error(long ret)
    Mach syscall handling
 */
 
-void static inline print_description_msg_header(mach_msg_header_t *hdr)
+static inline void print_description_msg_header(mach_msg_header_t *hdr)
 {
     char *name = NULL;
     int i;
@@ -887,15 +887,15 @@ typedef long (*syscall_function_t)(void *cpu_env, int num);
 #define SIZE    INT
 #define OFFSET  INT64
 
-#define WRAPPER_CALL_DIRECT_0(function, args) long __qemu_##function(void *cpu_env) {  return (long)function(); }
-#define WRAPPER_CALL_DIRECT_1(function, _arg1) long __qemu_##function(void *cpu_env) { int i = 0; typeof(_arg1) arg1 = _arg1;  return (long)function(arg1); }
-#define WRAPPER_CALL_DIRECT_2(function, _arg1, _arg2) long __qemu_##function(void *cpu_env) { int i = 0;  typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; return (long)function(arg1, arg2); }
-#define WRAPPER_CALL_DIRECT_3(function, _arg1, _arg2, _arg3) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; return (long)function(arg1, arg2, arg3); }
-#define WRAPPER_CALL_DIRECT_4(function, _arg1, _arg2, _arg3, _arg4) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; return (long)function(arg1, arg2, arg3, arg4); }
-#define WRAPPER_CALL_DIRECT_5(function, _arg1, _arg2, _arg3, _arg4, _arg5) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5;  return (long)function(arg1, arg2, arg3, arg4, arg5); }
-#define WRAPPER_CALL_DIRECT_6(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6;  return (long)function(arg1, arg2, arg3, arg4, arg5, arg6); }
-#define WRAPPER_CALL_DIRECT_7(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6; typeof(_arg7) arg7 = _arg7; return (long)function(arg1, arg2, arg3, arg4, arg5, arg6, arg7); }
-#define WRAPPER_CALL_DIRECT_8(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8) long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6; typeof(_arg7) arg7 = _arg7; typeof(_arg8) arg8 = _arg8;  return (long)function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); }
+#define WRAPPER_CALL_DIRECT_0(function, args) static long __qemu_##function(void *cpu_env) {  return (long)function(); }
+#define WRAPPER_CALL_DIRECT_1(function, _arg1) static long __qemu_##function(void *cpu_env) { int i = 0; typeof(_arg1) arg1 = _arg1;  return (long)function(arg1); }
+#define WRAPPER_CALL_DIRECT_2(function, _arg1, _arg2) static long __qemu_##function(void *cpu_env) { int i = 0;  typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2;  return (long)function(arg1, arg2); }
+#define WRAPPER_CALL_DIRECT_3(function, _arg1, _arg2, _arg3) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; return (long)function(arg1, arg2, arg3); }
+#define WRAPPER_CALL_DIRECT_4(function, _arg1, _arg2, _arg3, _arg4) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4;  return (long)function(arg1, arg2, arg3, arg4); }
+#define WRAPPER_CALL_DIRECT_5(function, _arg1, _arg2, _arg3, _arg4, _arg5) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5;  return (long)function(arg1, arg2, arg3, arg4, arg5); }
+#define WRAPPER_CALL_DIRECT_6(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6;  return (long)function(arg1, arg2, arg3, arg4, arg5, arg6); }
+#define WRAPPER_CALL_DIRECT_7(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6; typeof(_arg7) arg7 = _arg7;  return (long)function(arg1, arg2, arg3, arg4, arg5, arg6, arg7); }
+#define WRAPPER_CALL_DIRECT_8(function, _arg1, _arg2, _arg3, _arg4, _arg5, _arg6, _arg7, _arg8) static long __qemu_##function(void *cpu_env) { int i = 0;   typeof(_arg1) arg1 = _arg1; typeof(_arg2) arg2 = _arg2; typeof(_arg3) arg3 = _arg3; typeof(_arg4) arg4 = _arg4; typeof(_arg5) arg5 = _arg5; typeof(_arg6) arg6 = _arg6; typeof(_arg7) arg7 = _arg7; typeof(_arg8) arg8 = _arg8;  return (long)function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8); }
 #define WRAPPER_CALL_DIRECT(function, nargs, ...) WRAPPER_CALL_DIRECT_##nargs(function, __VA_ARGS__)
 #define WRAPPER_CALL_NOERRNO(function, nargs, ...)  WRAPPER_CALL_DIRECT(function, nargs, __VA_ARGS__)
 #define WRAPPER_CALL_INDIRECT(function, nargs, ...)
