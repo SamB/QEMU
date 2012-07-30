@@ -128,7 +128,7 @@ static inline void free_sigqueue(struct sigqueue *q)
 }
 
 /* abort execution with signal */
-void QEMU_NORETURN force_sig(int sig)
+static void QEMU_NORETURN force_sig(int sig)
 {
     int host_sig;
     host_sig = target_to_host_signal(sig);

@@ -96,6 +96,7 @@ int target_mprotect(unsigned long start, unsigned long len, int prot)
 }
 
 /* map an incomplete host page */
+static
 int mmap_frag(unsigned long host_start,
                unsigned long start, unsigned long end,
                int prot, int flags, int fd, unsigned long offset)
