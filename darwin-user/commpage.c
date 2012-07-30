@@ -129,7 +129,7 @@ static struct commpage_entry commpage_entries[] =
     COMMPAGE_ENTRY(bcopy,                 3, 0x780,  bcopy,                 CALL_DIRECT),
     COMMPAGE_ENTRY(memcpy,                3, 0x7a0,  memcpy,                CALL_DIRECT),
 
-#ifdef TARGET_I386
+#if defined(TARGET_I386)
     COMMPAGE_ENTRY(old_nanotime,          0, 0xf80,  do_nanotime,           CALL_INDIRECT),
     COMMPAGE_ENTRY(memset_pattern,        0, 0xf80,  unimpl_commpage,       CALL_INDIRECT),
     COMMPAGE_ENTRY(long_copy,             0, 0x1200, unimpl_commpage,       CALL_INDIRECT),
@@ -137,7 +137,7 @@ static struct commpage_entry commpage_entries[] =
     COMMPAGE_ENTRY(sysintegrity,          0, 0x1600, unimpl_commpage,       CALL_INDIRECT),
 
     COMMPAGE_ENTRY(nanotime,              0, 0x1700, do_nanotime,           CALL_INDIRECT),
-#elif TARGET_PPC
+#elif defined(TARGET_PPC)
     COMMPAGE_ENTRY(compare_and_swap32b,   0, 0xf80,  unimpl_commpage,       CALL_INDIRECT),
     COMMPAGE_ENTRY(compare_and_swap64b,   0, 0xfc0,  unimpl_commpage,       CALL_INDIRECT),
     COMMPAGE_ENTRY(memset_pattern,        0, 0x1000, unimpl_commpage,       CALL_INDIRECT),

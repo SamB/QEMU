@@ -955,11 +955,11 @@ long do_unix_syscall_indirect(void *cpu_env, int num)
     int i = 0;
 
     new_num = get_int_arg(&i, cpu_env);
-#ifdef TARGET_I386
+#if defined(TARGET_I386)
     ((CPUX86State*)cpu_env)->regs[R_ESP] += 4;
     /* XXX: not necessary */
     ((CPUX86State*)cpu_env)->regs[R_EAX] = new_num;
-#elif TARGET_PPC
+#elif defined(TARGET_PPC)
     {
         int i;
         uint32_t **regs = ((CPUPPCState*)cpu_env)->gpr;
@@ -970,11 +970,11 @@ long do_unix_syscall_indirect(void *cpu_env, int num)
     }
 #endif
     ret = do_unix_syscall(cpu_env, new_num);
-#ifdef TARGET_I386
+#if defined(TARGET_I386)
     ((CPUX86State*)cpu_env)->regs[R_ESP] -= 4;
     /* XXX: not necessary */
     ((CPUX86State*)cpu_env)->regs[R_EAX] = num;
-#elif TARGET_PPC
+#elif defined(TARGET_PPC)
     {
         int i;
         /* XXX: not really needed those regs are volatile across calls */
