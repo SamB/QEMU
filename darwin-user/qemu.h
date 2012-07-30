@@ -89,9 +89,45 @@ struct target_sigcontext {
 
 #endif
 
+/* This struct is used to hold certain information about the image.
+ * Basically, it replicates in user space what would be certain
+ * task_struct fields in the kernel
+ */
+struct image_info {
+        abi_ulong       load_bias;
+        abi_ulong       load_addr;
+        abi_ulong       start_code;
+        abi_ulong       end_code;
+        abi_ulong       start_data;
+        abi_ulong       end_data;
+        abi_ulong       start_brk;
+        abi_ulong       brk;
+        abi_ulong       start_mmap;
+        abi_ulong       mmap;
+        abi_ulong       rss;
+        abi_ulong       start_stack;
+        abi_ulong       stack_limit;
+        abi_ulong       entry;
+        abi_ulong       code_offset;
+        abi_ulong       data_offset;
+        abi_ulong       saved_auxv;
+        abi_ulong       arg_start;
+        abi_ulong       arg_end;
+	int		personality;
+#ifdef CONFIG_USE_FDPIC
+        abi_ulong       loadmap_addr;
+        uint16_t        nsegs;
+        void           *loadsegs;
+        abi_ulong       pt_dynamic_addr;
+        struct image_info *other_info;
+#endif
+};
+
 typedef struct TaskState {
     struct TaskState *next;
     int used; /* non zero if used */
+    struct image_info *info;
+
     uint8_t stack[0];
 } __attribute__((aligned(16))) TaskState;
 
