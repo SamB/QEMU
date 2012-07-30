@@ -135,6 +135,7 @@ int mach_exec(const char * filename, char ** argv, char ** envp,
 			  struct target_pt_regs * regs);
 
 /* mmap.c */
+extern unsigned long last_brk; /* dummy; Darwin doesn't have brk() anymore... */
 int target_mprotect(unsigned long start, unsigned long len, int prot);
 long target_mmap(unsigned long start, unsigned long len, int prot,
                  int flags, int fd, unsigned long offset);
@@ -143,6 +144,11 @@ long target_mremap(unsigned long old_addr, unsigned long old_size,
                    unsigned long new_size, unsigned long flags,
                    unsigned long new_addr);
 int target_msync(unsigned long start, unsigned long len, int flags);
+/* XXX: implement locking... */
+static inline void mmap_lock(void) {}
+static inline void mmap_unlock(void) {}
+static inline void cpu_list_lock(void) {}
+static inline void cpu_list_unlock(void) {}
 
 /* user access */
 

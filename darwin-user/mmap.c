@@ -26,7 +26,9 @@
 
 #include "qemu.h"
 
-//#define DEBUG_MMAP
+unsigned long last_brk; /* Dummy, since outside code expects this */
+
+#define DEBUG_MMAP
 
 /* NOTE: all the constants are the HOST ones */
 int target_mprotect(unsigned long start, unsigned long len, int prot)
