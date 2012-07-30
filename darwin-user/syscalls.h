@@ -45,7 +45,11 @@
  ENTRY("pipe",                     SYS_pipe,                           pipe,               0, CALL_INDIRECT, PTR)   /* 42  */
  ENTRY("getegid",                  SYS_getegid,                        getegid,                           0, CALL_NOERRNO, VOID)  /* 43  */
  ENTRY("profil",                   SYS_profil,                         profil,                            4, CALL_DIRECT, PTR, SIZE, INT, INT)   /* 44  */
+#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
  ENTRY("ktrace",                   SYS_ktrace,                         no_syscall,                        4, CALL_INDIRECT, VOID) /* 45  */
+#else
+ ENTRY("old ktrace",               45,                                 no_syscall,                        0, CALL_INDIRECT, VOID) /* 45  */
+#endif
  ENTRY("sigaction",                SYS_sigaction,                      do_sigaction,                      3, CALL_DIRECT, INT, PTR, PTR)   /* 46  */
  ENTRY("getgid",                   SYS_getgid,                         getgid,                            0, CALL_NOERRNO, VOID)  /* 47  */
  ENTRY("sigprocmask",              SYS_sigprocmask,                    do_sigprocmask,                    3, CALL_DIRECT, INT, PTR, PTR)   /* 48  */
@@ -230,8 +234,11 @@
  ENTRY("setattrlist",              SYS_setattrlist,                    unimpl_unix_syscall,               5, CALL_INDIRECT, VOID) /* 221  */
  ENTRY("getdirentriesattr",        SYS_getdirentriesattr,              do_getdirentriesattr,              8, CALL_DIRECT, INT, PTR, PTR, SIZE, PTR, PTR, PTR, UINT)   /* 222  */
  ENTRY("exchangedata",             SYS_exchangedata,                   exchangedata,                      3, CALL_DIRECT, PTR, PTR, UINT)   /* 223  */
- ENTRY("checkuseraccess",          SYS_checkuseraccess,                checkuseraccess,                   6, CALL_DIRECT, PTR, INT, PTR, INT, INT, UINT)   /* 224  */
- ENTRY("",                         224,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 224  HFS checkuseraccess check access to a file */
+#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
+ ENTRY("checkuseraccess",          SYS_checkuseraccess,                checkuseraccess,                   6, CALL_DIRECT, PTR, INT, PTR, INT, INT, UINT) /* 224  HFS checkuseraccess check access to a file */
+#else
+ ENTRY("old checkuseraccess",      224,                                no_syscall,                        0, CALL_INDIRECT, VOID)   /* 224  */
+#endif
  ENTRY("searchfs",                 SYS_searchfs,                       searchfs,                          6, CALL_DIRECT, PTR, PTR, PTR, UINT, UINT, PTR)   /* 225  */
  ENTRY("delete",                   SYS_delete,                         no_syscall,                        1, CALL_INDIRECT, VOID)   /* 226  private delete ( Carbon semantics ) */
  ENTRY("copyfile",                 SYS_copyfile,                       no_syscall,                        4, CALL_INDIRECT, VOID)   /* 227  */
@@ -254,7 +261,7 @@
  ENTRY("",                         244,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 244  */
  ENTRY("",                         245,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 245  */
  ENTRY("",                         246,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 246  */
-#ifdef SYS_nfsclnt
+#ifdef NFSCLIENT
  ENTRY("nfsclnt",                  SYS_nfsclnt,                        nfsclnt,                           2, CALL_DIRECT, INT, PTR)   /* 247  */
 #else
  ENTRY("nfsclnt",                  247,                                no_syscall,                        2, CALL_INDIRECT, VOID)   /* 247  */
@@ -308,11 +315,19 @@
  ENTRY("identitysvc",              SYS_identitysvc,                    unimpl_unix_syscall,               2, CALL_INDIRECT, VOID)   /* 293  */
  ENTRY("",                         294,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 294  */
  ENTRY("",                         295,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 295  */
+#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
  ENTRY("load_shared_file",         SYS_load_shared_file,               unimpl_unix_syscall,               7, CALL_INDIRECT, VOID)   /* 296  */
  ENTRY("reset_shared_file",        SYS_reset_shared_file,              unimpl_unix_syscall,               3, CALL_INDIRECT, VOID)   /* 297  */
  ENTRY("new_system_shared_regions",  SYS_new_system_shared_regions,    unimpl_unix_syscall,               0, CALL_INDIRECT, VOID)   /* 298  */
  ENTRY("shared_region_map_file_np",  SYS_shared_region_map_file_np,    unimpl_unix_syscall,               4, CALL_INDIRECT, VOID)   /* 299  */
  ENTRY("shared_region_make_private_np",  SYS_shared_region_make_private_np,  unimpl_unix_syscall,         2, CALL_INDIRECT, VOID)   /* 300  */
+#else
+ ENTRY("",                         296,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 296  */
+ ENTRY("",                         297,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 297  */
+ ENTRY("",                         298,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 298  */
+ ENTRY("",                         299,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 299  */
+ ENTRY("",                         300,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 300  */
+#endif
  ENTRY("",                         301,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 301  */
  ENTRY("",                         302,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 302  */
  ENTRY("",                         303,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 303  */
@@ -341,13 +356,22 @@
  ENTRY("",                         326,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 326  */
  ENTRY("issetugid",                SYS_issetugid,                      issetugid,                         0, CALL_DIRECT, VOID)   /* 327  */
  ENTRY("__pthread_kill",           SYS___pthread_kill,                 unimpl_unix_syscall,               2, CALL_INDIRECT, VOID)   /* 328  */
+#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
  ENTRY("pthread_sigmask",          SYS_pthread_sigmask,                pthread_sigmask,                   3, CALL_DIRECT, INT, PTR, PTR)   /* 329  */
  ENTRY("sigwait",                  SYS_sigwait,                        sigwait,                           2, CALL_DIRECT, PTR, PTR)   /* 330  */
+#else
+ ENTRY("__pthread_sigmask",        SYS___pthread_sigmask,              pthread_sigmask,                   3, CALL_DIRECT, INT, PTR, PTR)   /* 329  */
+ ENTRY("__sigwait",                SYS___sigwait,                      sigwait,                           2, CALL_DIRECT, PTR, PTR)   /* 330  */
+#endif
  ENTRY("__disable_threadsignal",   SYS___disable_threadsignal,         unimpl_unix_syscall,               1, CALL_INDIRECT, VOID)   /* 331  */
  ENTRY("__pthread_markcancel",     SYS___pthread_markcancel,           unimpl_unix_syscall,               1, CALL_INDIRECT, VOID)   /* 332  */
  ENTRY("__pthread_canceled",       SYS___pthread_canceled,             unimpl_unix_syscall,               1, CALL_INDIRECT, VOID)   /* 333  */
  ENTRY("__semwait_signal",         SYS___semwait_signal,               unimpl_unix_syscall,               6, CALL_INDIRECT, VOID)   /* 334  */
+#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
  ENTRY("utrace",                   SYS_utrace,                         unimpl_unix_syscall,               2, CALL_INDIRECT, VOID)   /* 335  */
+#else
+ ENTRY("old utrace",               335,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 335  */
+#endif
  ENTRY("proc_info",                SYS_proc_info,                      unimpl_unix_syscall,               6, CALL_INDIRECT, VOID)   /* 336  */
  ENTRY("",                         337,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 337  */
  ENTRY("",                         338,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 338  */
