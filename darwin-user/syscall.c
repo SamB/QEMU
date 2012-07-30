@@ -458,27 +458,27 @@ long do_mach_syscall(void *cpu_env, int num, uint32_t arg1, uint32_t arg2, uint3
 #if (defined(TARGET_I386) && defined(__i386__)) || (defined(TARGET_PPC) && defined(__ppc__))
     case -33:
         DPRINTF("semaphore_signal_trap(0x%x)\n", arg1);
-        ret = semaphore_signal_trap(arg1);
+        ret = semaphore_signal(arg1);
         break;
     case -34:
         DPRINTF("semaphore_signal_all_trap(0x%x)\n", arg1);
-        ret = semaphore_signal_all_trap(arg1);
+        ret = semaphore_signal_all(arg1);
         break;
     case -35:
         DPRINTF("semaphore_signal_thread_trap(0x%x)\n", arg1, arg2);
-        ret = semaphore_signal_thread_trap(arg1,arg2);
+        ret = semaphore_signal_thread(arg1,arg2);
         break;
 #endif
     case -36:
         DPRINTF("semaphore_wait_trap(0x%x)\n", arg1);
-        extern int semaphore_wait_trap(int); // XXX: is there any header for that?
-        ret = semaphore_wait_trap(arg1);
+//        extern int semaphore_wait_trap(int); // XXX: is there any header for that?
+        ret = semaphore_wait(arg1);
         break;
 /* may need more translation if target arch is different from host */
 #if (defined(TARGET_I386) && defined(__i386__)) || (defined(TARGET_PPC) && defined(__ppc__))
     case -37:
         DPRINTF("semaphore_wait_signal_trap(0x%x, 0x%x)\n", arg1, arg2);
-        ret = semaphore_wait_signal_trap(arg1,arg2);
+        ret = semaphore_wait_signal(arg1,arg2);
         break;
 #endif
     case -43:
@@ -492,7 +492,7 @@ long do_mach_syscall(void *cpu_env, int num, uint32_t arg1, uint32_t arg2, uint3
     case -61:
         DPRINTF("syscall_thread_switch(0x%x, 0x%x, 0x%x)\n",
                 arg1, arg2, arg3);
-        ret = syscall_thread_switch(arg1, arg2, arg3);  // just a hint to the scheduler; can drop?
+        ret = thread_switch(arg1, arg2, arg3);  // just a hint to the scheduler; can drop?
         break;
 #endif
     case -89:
