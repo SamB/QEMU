@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
+
+#ifdef __APPLE__
+#define _DARWIN_C_SOURCE 1
+/* XXX: We need this to get the ucontext types we expect, but it could
+ have unintended consequences... */
+#undef __DARWIN_UNIX03
+#define __DARWIN_UNIX03 0
+#endif
+
 #include "config.h"
 #include "cpu.h"
 #include "dyngen-exec.h"
@@ -31,7 +40,9 @@
 #undef ESI
 #undef EDI
 #undef EIP
+
 #include <signal.h>
+
 #ifdef __linux__
 #include <sys/ucontext.h>
 #endif
@@ -287,8 +298,7 @@ int cpu_signal_handler(int host_signum, void *pinfo,
 #endif /* __FreeBSD__|| __FreeBSD_kernel__ */
 
 #ifdef __APPLE__
-#include <sys/ucontext.h>
-typedef struct ucontext SIGCONTEXT;
+
 /* All Registers access - only for local access */
 #define REG_sig(reg_name, context)              \
     ((context)->uc_mcontext->ss.reg_name)
