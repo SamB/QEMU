@@ -31,6 +31,7 @@ struct syminfo {
     union {
       struct elf32_sym *elf32;
       struct elf64_sym *elf64;
+      struct nlist_extended *mach_o;
     } disas_symtab;
     const char *disas_strtab;
     struct syminfo *next;

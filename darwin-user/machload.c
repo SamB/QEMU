@@ -704,7 +704,7 @@ int load_object(const char *filename, struct target_pt_regs * regs, void ** mh)
             DPRINTF("saving symtab of %s (%d symbol(s))\n", filename, symtabcmd->nsyms);
             struct syminfo *s;
             s = malloc(sizeof(*s));
-            s->disas_symtab = symtab;
+            s->disas_symtab.mach_o = symtab;
             s->disas_strtab = strtab;
             s->disas_num_syms = symtabcmd->nsyms;
             s->next = syminfos;
