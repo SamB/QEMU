@@ -826,7 +826,7 @@ int main(int argc, char **argv)
     cpu_set_log_filename(log_file);
     if (log_mask) {
         int mask;
-        CPULogItem *item;
+        const CPULogItem *item;
 
         mask = cpu_str_to_log_mask(log_mask);
         if (!mask) {
