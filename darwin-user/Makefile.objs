@@ -1,0 +1,1 @@
+obj-y = main.o syscall.o mmap.o signal.o machload.o commpage.o
