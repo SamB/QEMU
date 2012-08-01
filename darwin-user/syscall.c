@@ -104,7 +104,7 @@ static inline int is_error(long ret)
 
 static inline void print_description_msg_header(mach_msg_header_t *hdr)
 {
-    char *name = NULL;
+    const char *name = NULL;
     int i;
     struct { int number; const char *name; } msg_name[] =
     {

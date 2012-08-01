@@ -75,7 +75,7 @@ typedef void (*commpage_indirect_function_t)(void *cpu_env, int num, uint32_t ar
     { #name, offset, nargs, options, (commpage_8args_function_t)func }
 
 struct commpage_entry {
-    char * name;
+    const char * name;
     int offset;
     int nargs;
     char options;
