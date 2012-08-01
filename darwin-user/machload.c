@@ -657,6 +657,7 @@ int load_object(const char *filename, struct target_pt_regs * regs, void ** mh)
             case LC_TWOLEVEL_HINTS:
             case LC_PREBIND_CKSUM:
             case LC_SUB_LIBRARY:
+            case LC_CODE_SIGNATURE:
                 break;
             default: fprintf(stderr, "warning: unknown command 0x%x in '%s'\n", lc->cmd, filename);
         }
