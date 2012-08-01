@@ -409,9 +409,16 @@ static int load_segment(struct mach_header *mh, struct segment_command *sc, int 
         if(fixed)
             opt |= MAP_FIXED;
 
+        if (sc->maxprot & PROT_WRITE) {
+            opt |= MAP_PRIVATE;
+        } else {
+            opt |= MAP_SHARED;
+        }
+
         DPRINTF("sc->vmaddr 0x%x slide 0x%x add 0x%x\n", slide, sc->vmaddr, sc->vmaddr+slide);
 
-        addr = target_mmap(sc->vmaddr+slide, sc->filesize,  sc->initprot, opt, fd, mh_pos + sc->fileoff);
+        addr = target_mmap(sc->vmaddr+slide, sc->filesize,  sc->initprot,
+                           opt, fd, mh_pos + sc->fileoff);
 
         if(addr==-1)
             qerror("load_segment: can't mmap at 0x%x\n", sc->vmaddr+slide);
@@ -428,7 +435,8 @@ static int load_segment(struct mach_header *mh, struct segment_command *sc, int 
     {
         addr += sc->filesize;
         size = sc->vmsize-sc->filesize;
-        addr = target_mmap(addr, size, sc->initprot, MAP_ANONYMOUS | MAP_FIXED, -1, 0);
+        addr = target_mmap(addr, size, sc->initprot,
+                           MAP_PRIVATE | MAP_ANONYMOUS | MAP_FIXED, -1, 0);
         if(addr==-1)
             qerror("load_segment: can't mmap at 0x%x\n", sc->vmaddr+slide);
     }
