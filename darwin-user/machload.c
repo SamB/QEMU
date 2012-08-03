@@ -319,10 +319,16 @@ static int load_thread(struct mach_header *mh, struct target_thread_command *tc,
         bswap_tc(tc);
 #if defined(TARGET_I386)
     entry = tc->state.eip;
-    DPRINTF(" eax 0x%.8x\n ebx 0x%.8x\n ecx 0x%.8x\n edx 0x%.8x\n edi 0x%.8x\n esi 0x%.8x\n ebp 0x%.8x\n esp 0x%.8x\n ss 0x%.8x\n eflags 0x%.8x\n eip 0x%.8x\n cs 0x%.8x\n ds 0x%.8x\n es 0x%.8x\n fs 0x%.8x\n gs 0x%.8x\n",
-            tc->state.eax, tc->state.ebx, tc->state.ecx, tc->state.edx, tc->state.edi, tc->state.esi, tc->state.ebp,
-            tc->state.esp, tc->state.ss, tc->state.eflags, tc->state.eip, tc->state.cs, tc->state.ds, tc->state.es,
-            tc->state.fs, tc->state.gs );
+    DPRINTF("Loading from LC_THREAD/LC_UNIXTHREAD:\n");
+    DPRINTF(" EAX=%08x EBX=%08x ECX=%08x EDX=%08x\n"
+            " ESI=%08x EDI=%08x EBP=%08x ESP=%08x\n"
+            " SS=%04x EFLAGS=%08x EIP=%08x\n"
+            " CS=%04x DS=%04x ES=%04x FS=%04x GS=%04x\n",
+            tc->state.eax, tc->state.ebx, tc->state.ecx, tc->state.edx,
+            tc->state.edi, tc->state.esi, tc->state.ebp, tc->state.esp,
+            tc->state.ss, tc->state.eflags, tc->state.eip,
+            tc->state.cs, tc->state.ds, tc->state.es,
+            tc->state.fs, tc->state.gs);
 #define reg_copy(reg)   regs->reg = tc->state.reg
     if(regs)
     {
