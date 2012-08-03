@@ -1,4 +1,4 @@
-# Makefile for qemu target independent devices.
+# -*- Makefile -*- for qemu target independent devices.
 
 include ../config-host.mak
 include ../config-all-devices.mak

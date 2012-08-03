@@ -1,4 +1,4 @@
-# Makefile for disassemblers.
+# -*- Makefile -*- for disassemblers.
 
 include ../config-host.mak
 include config.mak

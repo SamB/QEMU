@@ -1,4 +1,4 @@
-# Makefile for qemu target independent user files.
+# -*- Makefile -*- for qemu target-independent user files.
 
 include ../config-host.mak
 include $(SRC_PATH)/rules.mak
