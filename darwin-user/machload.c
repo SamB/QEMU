@@ -178,7 +178,7 @@ struct mach_ppc_thread_state {
 };
 
 /* XXX: use swap_ppc_thread_state() from <mach-o/ppc/swap.h> ? */
-void bswap_ppc_thread_state(struct mach_ppc_thread_state *ts)
+static void bswap_ppc_thread_state(struct mach_ppc_thread_state *ts)
 {
     bswap32s((uint32_t*)&ts->srr0);
     bswap32s((uint32_t*)&ts->srr1);
