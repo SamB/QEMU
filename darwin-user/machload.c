@@ -355,6 +355,34 @@ static int load_thread(struct mach_header *mh, struct target_thread_command *tc,
     return entry;
 }
 
+static int symfind(const void *s0, const void *s1)
+{
+    target_ulong addr = *(target_ulong *)s0;
+    struct nlist_extended *sym = (struct nlist_extended *)s1;
+    int result = 0;
+    if (addr < sym->st_value) {
+        result = -1;
+    } else if (addr >= sym->st_value + sym->st_size) {
+        result = 1;
+    }
+    return result;
+}
+
+static const char *lookup_symbol_mach(struct syminfo *s, target_ulong orig_addr)
+{
+    struct nlist_extended *syms = s->disas_symtab.mach_o;
+
+    // binary search
+    struct nlist_extended *sym;
+
+    sym = bsearch(&orig_addr, syms, s->disas_num_syms, sizeof(*syms), symfind);
+    if (sym != NULL) {
+        return s->disas_strtab + sym->n_un.n_strx;
+    }
+
+    return "";
+}
+
 static int load_dylinker(struct mach_header *mh, struct dylinker_command *dc, int fd, int mh_pos, int need_bswap)
 {
     int size;
@@ -718,6 +746,7 @@ int load_object(const char *filename, struct target_pt_regs * regs, void ** mh)
             DPRINTF("saving symtab of %s (%d symbol(s))\n", filename, symtabcmd->nsyms);
             struct syminfo *s;
             s = malloc(sizeof(*s));
+            s->lookup_symbol = lookup_symbol_mach;
             s->disas_symtab.mach_o = symtab;
             s->disas_strtab = strtab;
             s->disas_num_syms = symtabcmd->nsyms;
