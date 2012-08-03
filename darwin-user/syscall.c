@@ -776,10 +776,36 @@ static inline void byteswap_statfs(struct statfs *s)
     tswap32s((uint32_t*)&s->f_flags);
 }
 
+#if defined(__DARWIN_64_BIT_INO_T) && __DARWIN_64_BIT_INO_T
+#error "This module probably doesn't work when __DARWIN_64_BIT_INO_T is non-zero."
+#endif
+
 static inline void byteswap_stat(struct stat *s)
 {
     tswap32s((uint32_t*)&s->st_dev);
     tswap32s(&s->st_ino);
+    tswap16s(&s->st_mode);
+    tswap16s(&s->st_nlink);
+    tswap32s(&s->st_uid);
+    tswap32s(&s->st_gid);
+    tswap32s((uint32_t*)&s->st_rdev);
+    tswap32s((uint32_t*)&s->st_atimespec.tv_sec);
+    tswap32s((uint32_t*)&s->st_atimespec.tv_nsec);
+    tswap32s((uint32_t*)&s->st_mtimespec.tv_sec);
+    tswap32s((uint32_t*)&s->st_mtimespec.tv_nsec);
+    tswap32s((uint32_t*)&s->st_ctimespec.tv_sec);
+    tswap32s((uint32_t*)&s->st_ctimespec.tv_nsec);
+    tswap64s((uint64_t*)&s->st_size);
+    tswap64s((uint64_t*)&s->st_blocks);
+    tswap32s((uint32_t*)&s->st_blksize);
+    tswap32s(&s->st_flags);
+    tswap32s(&s->st_gen);
+}
+
+static inline void byteswap_stat64(struct stat64 *s)
+{
+    tswap32s((uint32_t*)&s->st_dev);
+    tswap64s(&s->st_ino);
     tswap16s(&s->st_mode);
     tswap16s(&s->st_nlink);
     tswap32s(&s->st_uid);
@@ -847,6 +873,9 @@ long do_fstatfs(uint32_t arg1, struct statfs * arg2);
 long do_stat(char * arg1, struct stat * arg2);
 long do_fstat(uint32_t arg1, struct stat * arg2);
 long do_lstat(char * arg1, struct stat * arg2);
+long do_stat64(char * arg1, struct stat64 * arg2);
+long do_fstat64(uint32_t arg1, struct stat64 * arg2);
+long do_lstat64(char * arg1, struct stat64 * arg2);
 long do_getdirentries(uint32_t arg1, void* arg2, uint32_t arg3, void* arg4);
 long do_lseek(void *cpu_env, int num);
 long do___sysctl(int * name, uint32_t namelen, void * oldp, size_t * oldlenp, void * newp, size_t newlen  /* ignored */);
@@ -1193,6 +1222,38 @@ long do_lstat(char * arg1, struct stat * arg2)
     ret = get_errno(lstat(arg1, arg2));
     if(!is_error(ret))
         byteswap_stat(arg2);
+    return ret;
+}
+
+long do_stat64(char * arg1, struct stat64 * arg2)
+{
+    long ret;
+    /* XXX: don't let the %s stay in there */
+    DPRINTF("stat(%s, %p)\n", arg1, arg2);
+    ret = get_errno(stat64(arg1, arg2));
+    if(!is_error(ret))
+        byteswap_stat64(arg2);
+    return ret;
+}
+
+long do_fstat64(uint32_t arg1, struct stat64 * arg2)
+{
+    long ret;
+    DPRINTF("fstat(0x%x, %p)\n", arg1, arg2);
+    ret = get_errno(fstat64(arg1, arg2));
+    if(!is_error(ret))
+        byteswap_stat64(arg2);
+    return ret;
+}
+
+long do_lstat64(char * arg1, struct stat64 * arg2)
+{
+    long ret;
+    /* XXX: don't let the %s stay in there */
+    DPRINTF("lstat(%s, %p)\n", (const char *)arg1, arg2);
+    ret = get_errno(lstat64(arg1, arg2));
+    if(!is_error(ret))
+        byteswap_stat64(arg2);
     return ret;
 }
 

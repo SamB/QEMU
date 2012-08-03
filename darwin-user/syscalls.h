@@ -374,9 +374,15 @@
 #endif
  ENTRY("proc_info",                SYS_proc_info,                      unimpl_unix_syscall,               6, CALL_INDIRECT, VOID)   /* 336  */
  ENTRY("",                         337,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 337  */
+#if !defined(SYS_stat64)
  ENTRY("",                         338,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 338  */
  ENTRY("",                         339,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 339  */
  ENTRY("",                         340,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 340  */
+#else
+ ENTRY("stat64",                   SYS_stat64,                         do_stat64,                         2, CALL_DIRECT, PTR, PTR)   /* 338  */
+ ENTRY("fstat64",                  SYS_fstat64,                        do_fstat64,                        2, CALL_DIRECT, INT, PTR)   /* 339  */
+ ENTRY("lstat64",                  SYS_lstat64,                        do_lstat64,                        2, CALL_DIRECT, PTR, PTR)   /* 340  */
+#endif
  ENTRY("",                         341,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 341  */
  ENTRY("",                         342,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 342  */
  ENTRY("",                         343,                                no_syscall,                        0, CALL_INDIRECT, VOID) /* 343  */
