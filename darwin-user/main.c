@@ -859,17 +859,31 @@ int main(int argc, char **argv)
 
     if (cpu_model == NULL) {
 #if defined(TARGET_I386)
-#ifdef TARGET_X86_64
+# ifdef TARGET_X86_64
         cpu_model = "qemu64";
-#else
+# else
         cpu_model = "qemu32";
-#endif
+# endif
 #elif defined(TARGET_PPC)
-#ifdef TARGET_PPC64
+# if 0 && defined(HOST_PPC) /* XXX: No 32-bit support for G5? Ouch! */
+        /* Since we can't replace the commpage when doing PPC on PPC,
+         * it is important that we understand all the instructions
+         * used by the routines that the kernel has chosen for the
+         * REAL commpage. Thus, we default to simulating a CPU of the
+         * same model as the real CPU.
+         *
+         * (Defaulting to G5 (ppc970) might not work, since G5 removes some
+         * features while adding others relative to G4.)
+         */
+        const NXArchInfo *nxarch = NXGetLocalArchInfo();
+        cpu_model = nxarch->name;
+# else
+# ifdef TARGET_PPC64
         cpu_model = "970";
-#else
+#  else
         cpu_model = "750";
-#endif
+#  endif
+# endif
 #else
 #error unsupported CPU
 #endif
@@ -880,8 +894,9 @@ int main(int argc, char **argv)
        qemu_host_page_size */
     env = cpu_init(cpu_model);
     if (!env) {
-        fprintf(stderr, "Unable to find CPU definition\n");
-        exit(1);
+        fprintf(stderr, "Unable to find CPU definition for model \"%s\"\n",
+                cpu_model);
+        abort();
     }
     cpu_reset(ENV_GET_CPU(env));
 
