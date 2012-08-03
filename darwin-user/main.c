@@ -591,8 +591,17 @@ void cpu_loop(CPUX86State *env)
             /* after sysenter, stack is in R_ECX, new eip in R_EDX (sysexit will flip them back)*/
             int saved_stack = env->regs[R_ESP];
             env->regs[R_ESP] = env->regs[R_ECX];
+            params = (uint32_t *)env->regs[R_ESP];
 
-            ret = do_unix_syscall(env, env->regs[R_EAX]);
+            if ((int)env->regs[R_EAX] >= 0) {
+                ret = do_unix_syscall(env, env->regs[R_EAX]);
+            } else {
+                ret = do_mach_syscall(env, env->regs[R_EAX],
+                                      *(params + 1), *(params + 2),
+                                      *(params + 3), *(params + 4),
+                                      *(params + 5), *(params + 6),
+                                      *(params + 7), *(params + 8));
+            }
 
             env->regs[R_ECX] = env->regs[R_ESP];
             env->regs[R_ESP] = saved_stack;
@@ -937,13 +946,18 @@ int main(int argc, char **argv)
              (3 << DESC_DPL_SHIFT) | (0x2 << DESC_TYPE_SHIFT));
 
     /* Darwin GDT setup.
-     * has changed a lot between old Darwin/x86 (pre-Mac Intel) and Mac OS X/x86,
-       now everything is done via  int 0x81(mach) int 0x82 (thread) and sysenter/sysexit(unix) */
+
+      This has changed a lot between old Darwin/x86 (pre-Mac Intel)
+      and Mac OS X/x86, now everything is done via:
+
+      int 0x80(unix), int 0x81(mach), int 0x82(thread), int 0x83(diag),
+      and sysenter/sysexit(unix/mach) */
+
     bzero(gdt_table, sizeof(gdt_table));
     env->gdt.base = (uint32_t)gdt_table;
     env->gdt.limit = sizeof(gdt_table) - 1;
 
-    /* Set up a back door to handle sysenter syscalls (unix) */
+    /* Set up a back door to handle sysenter syscalls (unix/mach, based on sign bit) */
     char * syscallbackdoor = malloc(64);
     page_set_flags((int)syscallbackdoor, (int)syscallbackdoor + 64, PROT_EXEC | PROT_READ | PAGE_VALID);
 
