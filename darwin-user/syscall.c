@@ -1542,12 +1542,18 @@ long do_unix_syscall(void *cpu_env, int num)
 {
     long ret = 0;
 
+#ifdef TARGET_I386
+    num = num & 0xffff; /* I386_SYSCALL_NUMBER_MASK */
+#endif
+
     DPRINTF("unix syscall %d: " , num);
 
     if( (num < 0) || (num > SYS_MAXSYSCALL-1) )
         qerror("unix syscall %d is out of unix syscall bounds (0-%d) " , num, SYS_MAXSYSCALL-1);
 
     DPRINTF("%s [%s]", unix_syscall_table[num].name, unix_syscall_table[num].call_type & CALL_DIRECT ? "direct" : "indirect" );
+
+    assert(unix_syscall_table[num].function);
     ret = unix_syscall_table[num].function(cpu_env, num);
 
     if(!(unix_syscall_table[num].call_type & CALL_NOERRNO))
