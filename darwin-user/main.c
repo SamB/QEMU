@@ -39,6 +39,7 @@
 # define environ  (*_NSGetEnviron())
 #endif
 
+#include <mach-o/arch.h>
 #include <mach/mach_init.h>
 #include <mach/vm_map.h>
 
