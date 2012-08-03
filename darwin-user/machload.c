@@ -68,7 +68,7 @@ extern const char *interp_prefix;
 struct nlist_extended
 {
     union {
-        char *n_name;
+        //char *n_name;
         long  n_strx;
     } n_un;
     unsigned char n_type;
