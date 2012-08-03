@@ -128,13 +128,37 @@ static inline void free_sigqueue(struct sigqueue *q)
 }
 
 /* abort execution with signal */
-static void QEMU_NORETURN force_sig(int sig)
+static void QEMU_NORETURN force_sig(int target_sig)
 {
     int host_sig;
-    host_sig = target_to_host_signal(sig);
-    fprintf(stderr, "qemu: uncaught target signal %d (%s) - exiting\n",
-            sig, strsignal(host_sig));
-    _exit(-host_sig);
+    struct sigaction act;
+    host_sig = target_to_host_signal(target_sig);
+    gdb_signalled(global_env, target_sig);
+
+    fprintf(stderr, "qemu: uncaught target signal %d (%s)\n",
+            target_sig, strsignal(host_sig));
+
+    /* The proper exit code for dying from an uncaught signal is
+     * -<signal>.  The kernel doesn't allow exit() or _exit() to pass
+     * a negative value.  To get the proper exit code we need to
+     * actually die from an uncaught signal.  Here the default signal
+     * handler is installed, we send ourself a signal and we wait for
+     * it to arrive. */
+    sigfillset(&act.sa_mask);
+    act.sa_handler = SIG_DFL;
+    sigaction(host_sig, &act, NULL);
+
+    /* For some reason raise(host_sig) doesn't send the signal when
+     * statically linked on x86-64. */
+    kill(getpid(), host_sig);
+
+    /* Make sure the signal isn't masked (just reuse the mask inside
+    of act) */
+    sigdelset(&act.sa_mask, host_sig);
+    sigsuspend(&act.sa_mask);
+
+    /* unreachable */
+    abort();
 }
 
 /* queue a signal so that it will be send to the virtual CPU as soon
